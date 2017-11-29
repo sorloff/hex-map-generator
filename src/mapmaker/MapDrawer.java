@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 /*
  * Handles drawing the actual image using the Graphics2D class
@@ -18,9 +19,12 @@ import java.awt.image.BufferedImage;
 public class MapDrawer {
 
   private Hex[][] map;
+  private HashMap<String, Integer> colors;
   private int radius, lineWidth, width, height;
 
-  public MapDrawer(Hex[][] arrMap, int radius, int lineWidth) {
+  public MapDrawer(Hex[][] arrMap, int radius, int lineWidth, HashMap<String, Integer> colors) {
+    this.colors = colors;
+    
     this.map = new Hex[arrMap.length][arrMap[0].length];
     for (int i = 0; i < arrMap.length; i++) {
       for (int j = 0; j < arrMap[i].length; j++) {
@@ -72,12 +76,21 @@ public class MapDrawer {
 	  y = (int) Math.rint(offset + i * radius * 1.7 + radius - 7);
 	}
 
-	drawHex(g, x, y, map[i][j].getType());
+	drawHex(g, x, y, colors.get(map[i][j].getType()));
+	
+	//TODO: clean this up
+	Graphics2D g2d = (Graphics2D) g;
+	Hexagon hex = new Hexagon(x, y, radius);
+	hex.draw(g2d, x, y, 0, colors.get(map[i][j].getType()), true); //fill
+	hex.draw(g2d, x, y, lineWidth, 0x000000, false); //border
+
+	g.setColor(new Color(0xFFFFFF));
       }
     }
   }
 
   //calls draw::Hexagon, and figures out what colors to use
+  //DEPRECIATED
   private void drawHex(Graphics g, int x, int y, int type) {
     Graphics2D g2d = (Graphics2D) g;
     Hexagon hex = new Hexagon(x, y, radius);

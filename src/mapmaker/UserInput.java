@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mapmaker;
 
-/**
- *
- * @author mono9_000
- */
 public class UserInput extends javax.swing.JFrame {
 
   /**
@@ -66,14 +57,14 @@ public class UserInput extends javax.swing.JFrame {
       }
     });
 
-    fieldLandMod.setText("0.5");
+    fieldLandMod.setText("0.1");
     fieldLandMod.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         fieldLandModActionPerformed(evt);
       }
     });
 
-    fieldSeaMod.setText("0.5");
+    fieldSeaMod.setText("0.1");
     fieldSeaMod.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         fieldSeaModActionPerformed(evt);
@@ -187,10 +178,39 @@ public class UserInput extends javax.swing.JFrame {
     
     //sea_chance, land_chance, base chance
     //calculation is: sum(neighbors_sea*sea_chance) + sum(neighbors_land*land_chance) + base_chance > 0.5
-    HexMap map = new HexMap(dims, seaMod, landMod, baseChance);
+    TypeRules ruleSet = new TypeRules();
+    
+    ruleSet.addRule("land");
+    ruleSet.addRule("sea");
+        
+    ruleSet.updateRule("land", Double.toString(baseChance), Double.toString(-1*landMod),
+		       "sea", "008000");
+    
+    ruleSet.updateRule("sea", Double.toString(baseChance), Double.toString(-1*seaMod),
+		       "land", "0000FF");
+    
+    
+    //experimental
+    ruleSet.addRule("plains");
+        
+    ruleSet.updateRule("plains", "0.5", "0.4", "plains", "7cfc00");
+    
+    String ID = ruleSet.createNewMod("plains", "CantSpawnNextTo");
+    ruleSet.updateMod("plains", ID, 0, "sea");
+    
+    ID = ruleSet.createNewMod("sea", "CantSpawnNextTo");
+    ruleSet.updateMod("sea", ID, 0, "plains");
+    
+    ruleSet.addRule("ocean");
+    
+    ruleSet.updateRule("ocean", "0.5", "0.4", "ocean", "000080");
+    
+    
+    HexMap map = new HexMap(dims, ruleSet, TypeRules.BLANK);
     map.makeMap();
-    map.printMap();
+//    map.printMap();
     map.makeMapImage();
+    
   }//GEN-LAST:event_buttonExecuteActionPerformed
 
   /**

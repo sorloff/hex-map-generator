@@ -7,33 +7,33 @@ package mapmaker;
 public class Hex {
   //0 for sea, 1 for land, 2 for edge, 3 for ???
 
-  private int type;
+  private String type;
 
   /* north     0
-	 * south     1
-	 * northEast 2
-	 * northWest 3
-	 * southEast 4
-	 * southWest 5
+   * south     1
+   * northEast 2
+   * northWest 3
+   * southEast 4
+   * southWest 5
    */
   private Hex[] adj;
-
+  
   public Hex() {
-    this.type = 3;
+    this.type = TypeRules.BLANK;
     this.adj = new Hex[6];
   }
 
   public Hex(Hex[] neighbors) {
-    this.type = 3;
+    this.type = TypeRules.BLANK;
     this.adj = new Hex[6];
     System.arraycopy(neighbors, 0, adj, 0, neighbors.length);
   }
 
-  public void setType(int newType) {
+  public void setType(String newType) {
     type = newType;
   }
 
-  public int getType() {
+  public String getType() {
     return type;
   }
 
